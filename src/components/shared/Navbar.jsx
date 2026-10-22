@@ -19,7 +19,7 @@ export default function Navbar() {
         clearToken();
         setMe(null);
         navigate("/");
-        window.location.reload();
+        
     };
 
     useEffect(() => {

@@ -113,7 +113,7 @@ const handleSubmit = async (e) => {
                                 <button
                                     type="button"
                                     onClick={() => {
-                                        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDlhNzQwMGI2MjkwZjY4ZjFlNDg3ZCIsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzkyNjc1ODE4LCJleHAiOjE3OTUyNjc4MTh9.YmOxypt3DrAapsYxA0lim2_EbgtitOcnmgM1L9AF-1w";
+                                        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZGEzNWU1N2E1OGVlOGRjZjAyODI0MCIsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzkyNjg4NTc1LCJleHAiOjE3OTUyODA1NzV9.omVq56__1boL1pA44kZ1hNpwdyS4vx5LQVVKzYmTn2Y";
                                         localStorage.setItem("token", token);
                                         localStorage.setItem("user_token", token);
                                         localStorage.setItem("dev_bypass", "true");
