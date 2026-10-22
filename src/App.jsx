@@ -10,6 +10,8 @@ import CourseDetails from "./pages/CousrseDetails/CourseDetails";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import NotFound from "./pages/NotFound/NotFound";
+import ProfilePage from "./pages/profile/profilePage";
+
 
 // Lazy load heavy components for code splitting
 const CoursePlayer = lazy(() => import("./pages/CoursePlayer/CoursePlayer"));
@@ -57,6 +59,15 @@ export default function App() {
             }
           />
 
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+
           {/* course player (protected) */}
           <Route
             path="/courses/:id/player"
@@ -81,15 +92,78 @@ export default function App() {
             }
           >
             {/* nested admin pages */}
-            <Route index element={<Suspense fallback={<LoadingSpinner />}><AdminOverview /></Suspense>} />
-            <Route path="courses" element={<Suspense fallback={<LoadingSpinner />}><ManageCourses /></Suspense>} />
-            <Route path="courses/edit/:id" element={<Suspense fallback={<LoadingSpinner />}><EditCourse /></Suspense>} />
-            <Route path="courses/create" element={<Suspense fallback={<LoadingSpinner />}><CreateCourse /></Suspense>} />
-            <Route path="video-classes" element={<Suspense fallback={<LoadingSpinner />}><VideoClasses /></Suspense>} />
-            <Route path="enrollments" element={<Suspense fallback={<LoadingSpinner />}><Enrollments /></Suspense>} />
-            <Route path="assignments" element={<Suspense fallback={<LoadingSpinner />}><Assignments /></Suspense>} />
-            <Route path="analytics" element={<Suspense fallback={<LoadingSpinner />}><Analytics /></Suspense>} />
-            <Route path="users" element={<Suspense fallback={<LoadingSpinner />}><ManageUsers /></Suspense>} />
+            <Route
+              index
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <AdminOverview />
+                </Suspense>
+              }
+            />
+            <Route
+              path="courses"
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <ManageCourses />
+                </Suspense>
+              }
+            />
+            <Route
+              path="courses/edit/:id"
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <EditCourse />
+                </Suspense>
+              }
+            />
+            <Route
+              path="courses/create"
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <CreateCourse />
+                </Suspense>
+              }
+            />
+            <Route
+              path="video-classes"
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <VideoClasses />
+                </Suspense>
+              }
+            />
+            <Route
+              path="enrollments"
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Enrollments />
+                </Suspense>
+              }
+            />
+            <Route
+              path="assignments"
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Assignments />
+                </Suspense>
+              }
+            />
+            <Route
+              path="analytics"
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Analytics />
+                </Suspense>
+              }
+            />
+            <Route
+              path="users"
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <ManageUsers />
+                </Suspense>
+              }
+            />
           </Route>
 
           {/* 404 */}
