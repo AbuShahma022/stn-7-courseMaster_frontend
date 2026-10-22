@@ -19,23 +19,45 @@ export default function Login() {
         setForm({ email, password });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            setLoading(true);
-            setError(null);
 
-            const res = await loginUser(form);
-            saveToken(res.data.token);
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-            navigate("/");
-            window.location.reload();
-        } catch (err) {
-            setError(err.response?.data?.message || "Login failed. Please check your credentials.");
-        } finally {
-            setLoading(false);
-        }
-    };
+  try {
+    setLoading(true);
+    setError(null);
+
+    const res = await loginUser(form);
+
+
+
+    const { token, user } = res.data;
+
+    if (!token || !user) {
+      throw new Error("Token or user missing from login response");
+    }
+
+    saveToken(token);
+
+    const destination =
+      user.role === "admin" ? "/admin" : "/student";
+
+    console.log("NAVIGATING TO:", destination);
+
+    navigate(destination, { replace: true });
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
+
+    setError(
+      err.response?.data?.message ||
+      err.message ||
+      "Login failed"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
 
     return (
         <div className="max-w-lg mx-auto px-4 py-10">
@@ -91,7 +113,7 @@ export default function Login() {
                                 <button
                                     type="button"
                                     onClick={() => {
-                                        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYzFmMzdlNjYwMDZmMWRjYmI1YjUyNiIsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzkxMDk4NTg4fQ.4s3Ygh9GtTper2SB8byNILxPSxZ8y3pO-WyFupmQ0Ws";
+                                        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDlhNzQwMGI2MjkwZjY4ZjFlNDg3ZCIsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzkyNjc1ODE4LCJleHAiOjE3OTUyNjc4MTh9.YmOxypt3DrAapsYxA0lim2_EbgtitOcnmgM1L9AF-1w";
                                         localStorage.setItem("token", token);
                                         localStorage.setItem("user_token", token);
                                         localStorage.setItem("dev_bypass", "true");
@@ -105,7 +127,7 @@ export default function Login() {
                                 <button
                                     type="button"
                                     onClick={() => {
-                                        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYzFmMzdlNjYwMDZmMWRjYmI1YjUyNSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MTA5ODU4OH0.vL3Hj-fEGVbouM-cZ9RtMIpaCU5ugRwsNqaKyYdxdNY";
+                                        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDlhNzQwMGI2MjkwZjY4ZjFlNDg3YiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MjY3NTk1NSwiZXhwIjoxNzk1MjY3OTU1fQ.Zo9eVB8wMK6_n30CdKPSIPOr-t2211pI92yO00C78Fk";
                                         localStorage.setItem("token", token);
                                         localStorage.setItem("user_token", token);
                                         localStorage.setItem("dev_bypass", "true");

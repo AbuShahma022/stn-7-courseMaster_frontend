@@ -10,10 +10,10 @@ export default function Navbar() {
     const token = getToken();
     const [me, setMe] = useState(null);
 
-    const navLinkClass = ({ isActive, to }) =>
-        (isActive || window.location.pathname.startsWith("/"))
-            ? "text-primary font-semibold"
-            : "text-base-content/80 hover:text-primary";
+   const navLinkClass = ({ isActive }) =>
+  isActive
+    ? "text-primary font-semibold"
+    : "text-base-content/80 hover:text-primary";
 
     const handleLogout = () => {
         clearToken();
