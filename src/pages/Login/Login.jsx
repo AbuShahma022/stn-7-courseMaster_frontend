@@ -42,7 +42,7 @@ const handleSubmit = async (e) => {
     const destination =
       user.role === "admin" ? "/admin" : "/student";
 
-    console.log("NAVIGATING TO:", destination);
+    
 
     navigate(destination, { replace: true });
   } catch (err) {

@@ -16,10 +16,11 @@ export const enrollCourseAsync = createAsyncThunk(
 );
 
 export const fetchMyEnrollments = createAsyncThunk(
+
     "enrollment/fetchMyEnrollments",
     async (_, { rejectWithValue }) => {
         try {
-            const res = await getMyEnrollments();
+            const res = await getMyEnrollments();            
             return res.data;
         } catch (err) {
             return rejectWithValue(
@@ -28,6 +29,9 @@ export const fetchMyEnrollments = createAsyncThunk(
         }
     }
 );
+
+
+
 
 export const completeLessonAsync = createAsyncThunk(
     "enrollment/completeLesson",
@@ -62,50 +66,52 @@ const enrollmentSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(enrollCourseAsync.pending, (state) => {
-                state.enrolling = true;
-                state.error = null;
-            })
-            .addCase(enrollCourseAsync.fulfilled, (state, action) => {
-                state.enrolling = false;
-                state.success = "Successfully enrolled!";
-                state.enrollments.push(action.payload);
-            })
-            .addCase(enrollCourseAsync.rejected, (state, action) => {
-                state.enrolling = false;
-                state.error = action.payload;
-            })
-            .addCase(fetchMyEnrollments.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(fetchMyEnrollments.fulfilled, (state, action) => {
-                state.loading = false;
-                // Code-6 bug: action.payload is the array, but trying to access .data makes it undefined
-                state.enrollments = action.payload.data;
-            })
-            .addCase(fetchMyEnrollments.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(completeLessonAsync.pending, (state) => {
-                state.error = null;
-            })
-            .addCase(completeLessonAsync.fulfilled, (state, action) => {
-                state.success = "Lesson marked complete!";
-                const updated = action.payload;
-                if (!updated) return;
-                const idx = state.enrollments.findIndex((e) => e._id === updated._id);
-                if (idx !== -1) {
-                    state.enrollments[idx] = updated;
-                } else {
-                    // safe fallback
-                    state.enrollments.push(updated);
-                }
-            })
-            .addCase(completeLessonAsync.rejected, (state, action) => {
-                state.error = action.payload;
-            });
+          .addCase(enrollCourseAsync.pending, (state) => {
+            state.enrolling = true;
+            state.error = null;
+          })
+          .addCase(enrollCourseAsync.fulfilled, (state, action) => {
+            state.enrolling = false;
+            state.success = "Successfully enrolled!";
+            state.enrollments.push(action.payload);
+          })
+          .addCase(enrollCourseAsync.rejected, (state, action) => {
+            state.enrolling = false;
+            state.error = action.payload;
+          })
+          .addCase(fetchMyEnrollments.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+          })
+          .addCase(fetchMyEnrollments.fulfilled, (state, action) => {
+            state.loading = false;
+            state.enrollments = action.payload;
+            state.error = null;
+          })
+          .addCase(fetchMyEnrollments.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+          })
+          .addCase(completeLessonAsync.pending, (state) => {
+            state.error = null;
+          })
+          .addCase(completeLessonAsync.fulfilled, (state, action) => {
+            state.success = "Lesson marked complete!";
+            const updated = action.payload;
+            if (!updated) return;
+            const idx = state.enrollments.findIndex(
+              (e) => e._id === updated._id,
+            );
+            if (idx !== -1) {
+              state.enrollments[idx] = updated;
+            } else {
+              // safe fallback
+              state.enrollments.push(updated);
+            }
+          })
+          .addCase(completeLessonAsync.rejected, (state, action) => {
+            state.error = action.payload;
+          });
     },
 });
 
