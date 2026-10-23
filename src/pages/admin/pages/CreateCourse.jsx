@@ -91,97 +91,132 @@ export default function CreateCourse() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-                <div className="form-control">
-                    <label className="label">
-                        <span className="label-text font-semibold">Course Title *</span>
-                    </label>
-                    <input
-                        type="text"
-                        name="title"
-                        value={form.title}
-                        onChange={handleChange}
-                        placeholder="Enter course title"
-                        className="input input-bordered"
-                        required
-                    />
-                </div>
+             
+<div className="space-y-6">
+  {/* Course Title */}
+  <div className="form-control w-full">
+    <label htmlFor="title" className="label pb-2">
+      <span className="label-text font-semibold">
+        Course Title <span className="text-error">*</span>
+      </span>
+    </label>
+    <input
+      id="title"
+      type="text"
+      name="title"
+      value={form.title}
+      onChange={handleChange}
+      placeholder="e.g. Complete Web Development Masterclass"
+      className="input input-bordered w-full rounded-xl bg-base-100 transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+      required
+    />
+  </div>
 
-                <div className="form-control">
-                    <label className="label">
-                        <span className="label-text font-semibold">Description *</span>
-                    </label>
-                    <textarea
-                        name="description"
-                        value={form.description}
-                        onChange={handleChange}
-                        placeholder="Course description"
-                        className="textarea textarea-bordered h-28"
-                        required
-                    />
-                </div>
+  {/* Description */}
+  <div className="form-control w-full">
+    <label htmlFor="description" className="label pb-2">
+      <span className="label-text font-semibold">
+        Course Description <span className="text-error">*</span>
+      </span>
+    </label>
+    <textarea
+      id="description"
+      name="description"
+      value={form.description}
+      onChange={handleChange}
+      placeholder="Describe what students will learn in this course..."
+      className="textarea textarea-bordered min-h-32 w-full resize-y rounded-xl bg-base-100 transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+      required
+    />
+    <label className="label pt-1">
+      <span className="label-text-alt text-base-content/60">
+        Explain the course content, learning goals, and key benefits.
+      </span>
+    </label>
+  </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text font-semibold">Instructor Name *</span>
-                        </label>
-                        <input
-                            type="text"
-                            name="instructorName"
-                            value={form.instructorName}
-                            onChange={handleChange}
-                            placeholder="Instructor name"
-                            className="input input-bordered"
-                            required
-                        />
-                    </div>
+  {/* Instructor & Price */}
+  <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+    <div className="form-control w-full">
+      <label htmlFor="instructorName" className="label pb-2">
+        <span className="label-text font-semibold">
+          Instructor Name <span className="text-error">*</span>
+        </span>
+      </label>
+      <input
+        id="instructorName"
+        type="text"
+        name="instructorName"
+        value={form.instructorName}
+        onChange={handleChange}
+        placeholder="Enter instructor name"
+        className="input input-bordered w-full rounded-xl bg-base-100 transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+        required
+      />
+    </div>
 
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text font-semibold">Price (৳) *</span>
-                        </label>
-                        <input
-                            type="number"
-                            name="price"
-                            value={form.price}
-                            onChange={handleChange}
-                            placeholder="Price in taka"
-                            className="input input-bordered"
-                            min="0"
-                            required
-                        />
-                    </div>
-                </div>
+    <div className="form-control w-full">
+      <label htmlFor="price" className="label pb-2">
+        <span className="label-text font-semibold">
+          Course Price <span className="text-error">*</span>
+        </span>
+      </label>
+      <label className="input input-bordered flex w-full items-center gap-2 rounded-xl bg-base-100 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+        <span className="font-semibold text-base-content/60">৳</span>
+        <input
+          id="price"
+          type="number"
+          name="price"
+          value={form.price}
+          onChange={handleChange}
+          placeholder="0.00"
+          className="grow bg-transparent outline-none"
+          min="0"
+          required
+        />
+      </label>
+    </div>
+  </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text font-semibold">Category</span>
-                        </label>
-                        <input
-                            type="text"
-                            name="category"
-                            value={form.category}
-                            onChange={handleChange}
-                            placeholder="e.g., Web Development"
-                            className="input input-bordered"
-                        />
-                    </div>
+  {/* Category & Tags */}
+  <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+    <div className="form-control w-full">
+      <label htmlFor="category" className="label pb-2">
+        <span className="label-text font-semibold">Category</span>
+      </label>
+      <input
+        id="category"
+        type="text"
+        name="category"
+        value={form.category}
+        onChange={handleChange}
+        placeholder="e.g. Web Development"
+        className="input input-bordered w-full rounded-xl bg-base-100 transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+      />
+    </div>
 
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text font-semibold">Tags (comma separated)</span>
-                        </label>
-                        <input
-                            type="text"
-                            name="tags"
-                            value={form.tags}
-                            onChange={handleChange}
-                            placeholder="react, javascript, web"
-                            className="input input-bordered"
-                        />
-                    </div>
-                </div>
+    <div className="form-control w-full">
+      <label htmlFor="tags" className="label pb-2">
+        <span className="label-text font-semibold">Course Tags</span>
+      </label>
+      <input
+        id="tags"
+        type="text"
+        name="tags"
+        value={form.tags}
+        onChange={handleChange}
+        placeholder="react, javascript, web"
+        className="input input-bordered w-full rounded-xl bg-base-100 transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+      />
+      <label className="label pt-1">
+        <span className="label-text-alt text-base-content/60">
+          Separate tags with commas.
+        </span>
+      </label>
+    </div>
+  </div>
+</div>
+
 
                 {/* Syllabus Section */}
                 <div className="divider">Course Syllabus (Modules & Lessons)</div>
