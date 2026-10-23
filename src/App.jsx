@@ -11,6 +11,7 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import NotFound from "./pages/NotFound/NotFound";
 import ProfilePage from "./pages/profile/profilePage";
+import About from "./pages/about/about";
 
 
 // Lazy load heavy components for code splitting
@@ -46,6 +47,7 @@ export default function App() {
           <Route path="/courses/:id" element={<CourseDetails />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/about" element={<About/>} />
 
           {/* student dashboard (protected) */}
           <Route
