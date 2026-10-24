@@ -3,9 +3,18 @@ import { loginUser } from "../../services/auth.api";
 import { saveToken } from "../../utils/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, LogIn, Sparkles, ShieldCheck, UserCheck } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { loginAsync } from "../../store/slices/authSlice";
+
 
 export default function Login() {
     const navigate = useNavigate();
+
+    // Inside your component:
+const dispatch = useDispatch();
+
+const location = useLocation();
 
     const [form, setForm] = useState({ email: "", password: "" });
     const [showPassword, setShowPassword] = useState(false);
@@ -19,7 +28,7 @@ export default function Login() {
         setForm({ email, password });
     };
 
-
+/*
 const handleSubmit = async (e) => {
   e.preventDefault();
 
@@ -58,6 +67,31 @@ const handleSubmit = async (e) => {
   }
 };
 
+*/
+
+const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+        setLoading(true);
+        setError(null);
+
+        const data = await dispatch(loginAsync(form)).unwrap();
+        const { user } = data;
+
+        const destination =
+            location.state?.from ||
+            (user.role === "admin" ? "/admin" : "/student");
+
+        navigate(destination, { replace: true });
+    } catch (err) {
+        setError(
+            typeof err === "string" ? err : err.message || "Login failed"
+        );
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
         <div className="max-w-lg mx-auto px-4 py-10">

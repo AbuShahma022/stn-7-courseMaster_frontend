@@ -7,6 +7,7 @@ import {
 } from "../../store/slices/coursesSlice";
 import { enrollCourseAsync, clearSuccess } from "../../store/slices/enrollmentSlice";
 import { getMeAsync } from "../../store/slices/authSlice";
+import { getToken } from "../../utils/auth";
 
 export default function CourseDetails() {
     const { id } = useParams();
@@ -30,13 +31,20 @@ export default function CourseDetails() {
         }
     }, [token, user, dispatch]);
 
-    const isCreator = user && currentCourse && user._id === currentCourse.instructorId;
+    //const isCreator = user && currentCourse && user._id === currentCourse.instructorId;
     const isAdmin = user && user.role === "admin";
-    const cannotEnroll = isAdmin || isCreator;
+    //const cannotEnroll = isAdmin || isCreator;
+
+   // const isAdmin = user?.role === "admin";
+const cannotEnroll = isAdmin;
 
     const alreadyEnrolled = !!myEnrollments?.find((e) => e.course?._id === id);
-
+/*
     const handleEnroll = async () => {
+         console.log("Redux user:", user);
+    console.log("Redux token:", token);
+    console.log("Authenticated:", isAuthenticated);
+    console.log("Storage token:", getToken());
         // if user object not present but token exists, attempt to fetch profile
         if (!user && token) {
             try {
@@ -57,6 +65,49 @@ export default function CourseDetails() {
         // The backend can be updated later to handle batch references properly
         dispatch(enrollCourseAsync({ courseId: id, batchId: selectedBatchId !== null ? selectedBatchId.toString() : null }));
     };
+    */
+
+    const handleEnroll = async () => {
+    let currentUser = user;
+
+    // Recover the user from the stored token if Redux has no user
+    if (!currentUser && getToken()) {
+        try {
+            currentUser = await dispatch(getMeAsync()).unwrap();
+        } catch (error) {
+            console.error("Failed to load user:", error);
+
+            navigate("/login", {
+                state: { from: `/courses/${id}` },
+            });
+            return;
+        }
+    }
+
+    // Redirect if no authenticated user can be loaded
+    if (!currentUser) {
+        navigate("/login", {
+            state: { from: `/courses/${id}` },
+        });
+        return;
+    }
+
+    if (currentUser.role === "admin") return;
+
+    try {
+        await dispatch(
+            enrollCourseAsync({
+                courseId: id,
+                batchId:
+                    selectedBatchId != null
+                        ? String(selectedBatchId)
+                        : null,
+            })
+        ).unwrap();
+    } catch (error) {
+        console.error("Enrollment failed:", error);
+    }
+};
 
     useEffect(() => {
         if (success) {
@@ -67,6 +118,24 @@ export default function CourseDetails() {
             return () => clearTimeout(timer);
         }
     }, [success, navigate, dispatch]);
+/*
+useEffect(() => {
+    console.log("Enrollment UI state:", {
+        user,
+        currentUserId: user?._id || user?.id,
+        instructorId: currentCourse?.instructorId,
+        
+        isAdmin,
+        cannotEnroll,
+        isAuthenticated,
+    });
+}, [user, currentCourse, isAdmin, cannotEnroll, isAuthenticated]);
+
+useEffect(() => {
+    console.log("Course data:", currentCourse);
+}, [currentCourse]);
+*/
+
 
     if (detailLoading) {
         return (
@@ -90,7 +159,7 @@ export default function CourseDetails() {
         <div className="space-y-4 sm:space-y-6">
             <div className="card bg-base-100 border border-base-300 shadow-md">
                 <div className="card-body p-4 sm:p-6">
-                    <h1 className="page-heading break-words">{course.title}</h1>
+                    <h1 className="page-heading wrap-break-words">{course.title}</h1>
 
                     <div className="flex flex-wrap gap-2 mt-3">
                         {course.tags?.map((tag, i) => (
