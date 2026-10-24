@@ -115,167 +115,206 @@ export default function CoursePlayer() {
     const lesson = module?.lessons?.[selectedLesson];
 
     return (
-        <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-4">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
-                <div className="lg:col-span-2 space-y-3 sm:space-y-4">
-                    <div className="card bg-base-100 shadow">
-                        <div className="card-body p-3 sm:p-6">
-                            <h2 className="card-title text-lg sm:text-xl md:text-2xl break-words">{currentCourse.title}</h2>
-                            <div className="flex justify-between items-center mt-2">
-                                <p className="text-xs sm:text-sm">Progress</p>
-                                <p className="text-xs sm:text-sm font-bold text-primary">
-                                    {enrollment?.progress?.percent || 0}%
-                                </p>
-                            </div>
-                            <progress
-                                className="progress progress-primary w-full mt-2"
-                                value={enrollment?.progress?.percent || 0}
-                                max="100"
-                            ></progress>
-                        </div>
-                    </div>
-
-                    {lesson?.videoUrl && (
-                        <div className="card bg-base-100 shadow">
-                            <div className="card-body p-3 sm:p-6">
-                                <h3 className="card-title text-base sm:text-lg md:text-xl break-words">{lesson.title}</h3>
-                                <div className="bg-base-300 rounded overflow-hidden mt-2 sm:mt-4">
-                                    <iframe
-                                        style={{ height: '700px', width: '300px' }}
-                                        src={convertToEmbedUrl(lesson.videoUrl)}
-                                        title={lesson.title}
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                        allowFullScreen
-                                        frameBorder="0"
-                                    ></iframe>
-                                </div>
-
-                                <button
-                                    onClick={handleMarkComplete}
-                                    disabled={!!enrollment?.progress?.completedLessons?.includes(lesson)}
-                                    className={`btn btn-sm sm:btn-md ${enrollment?.progress?.completedLessons?.includes(lesson) ? "btn-disabled" : "btn-success"} mt-3 sm:mt-4 w-full sm:w-auto`}
-                                >
-                                    {enrollment?.progress?.completedLessons?.includes(lesson) ? "Completed ✓" : "✓ Mark as Complete"}
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Live Class Section */}
-                    {lesson?.liveClassLink && (
-                        <div className="card bg-info/10 border-2 border-info shadow">
-                            <div className="card-body p-3 sm:p-6">
-                                <h3 className="card-title text-info">
-                                    🔴 Live Class Available
-                                </h3>
-                                {lesson.liveClassDate && (
-                                    <p className="text-sm mb-2">
-                                        <strong>Scheduled:</strong> {new Date(lesson.liveClassDate).toLocaleString()}
-                                    </p>
-                                )}
-                                <div className="card-actions justify-end mt-3">
-                                    <a
-                                        href={lesson.liveClassLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="btn btn-info"
-                                    >
-                                        Join Live Class
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {lesson?.assignmentPrompt && (
-                        <AssignmentSubmission
-                            courseId={id}
-                            lessonId={lesson._id}
-                            prompt={lesson.assignmentPrompt}
-                            enrollment={enrollment}
-                            onComplete={handleMarkComplete}
-                        />
-                    )}
-
-                    {lesson?.quiz && lesson.quiz.length > 0 && (
-                        <QuizInterface
-                            quiz={lesson.quiz}
-                            courseId={id}
-                            lessonId={lesson._id}
-                            enrollment={enrollment}
-                            onComplete={handleMarkComplete}
-                        />
-                    )}
+      <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+          <div className="lg:col-span-2 space-y-3 sm:space-y-4">
+            <div className="card bg-base-100 shadow">
+              <div className="card-body p-3 sm:p-6">
+                <h2 className="card-title text-lg sm:text-xl md:text-2xl break-words">
+                  {currentCourse.title}
+                </h2>
+                <div className="flex justify-between items-center mt-2">
+                  <p className="text-xs sm:text-sm">Progress</p>
+                  <p className="text-xs sm:text-sm font-bold text-primary">
+                    {enrollment?.progress?.percent || 0}%
+                  </p>
                 </div>
-
-                <div className="card bg-base-100 shadow h-fit lg:sticky lg:top-20 order-first lg:order-last">
-                    <div className="card-body p-3 sm:p-6">
-                        <h3 className="card-title text-base sm:text-lg mb-2 sm:mb-4">Modules & Lessons</h3>
-
-                        <div className="space-y-2 sm:space-y-3 max-h-[40vh] sm:max-h-[50vh] lg:max-h-[70vh] overflow-y-auto">
-                            {currentCourse.syllabus?.map((mod, modIdx) => (
-                                <div key={modIdx} className="space-y-2">
-                                    <button
-                                        onClick={() => {
-                                            setSelectedModule(modIdx);
-                                            setSelectedLesson(0);
-                                        }}
-                                        className={`w-full text-left font-semibold p-2 rounded transition ${selectedModule === modIdx
-                                            ? "bg-primary text-primary-content"
-                                            : "bg-base-200 hover:bg-base-300"
-                                            }`}
-                                    >
-                                        📚 {mod.title}
-                                    </button>
-
-                                    {selectedModule === modIdx && (
-                                        <div className="space-y-1 pl-4">
-                                            {mod.lessons?.map((les, lesIdx) => {
-                                                const hasAssignment = !!les.assignmentPrompt;
-                                                const hasQuiz = les.quiz && les.quiz.length > 0;
-                                                const hasLiveClass = !!les.liveClassLink;
-                                                const isCompleted = enrollment?.progress?.completedLessons?.includes(les._id);
-                                                
-                                                // Check if live class is upcoming
-                                                const isUpcoming = hasLiveClass && les.liveClassDate && new Date(les.liveClassDate) > new Date();
-                                                const liveClassDate = hasLiveClass && les.liveClassDate ? new Date(les.liveClassDate) : null;
-
-                                                return (
-                                                    <button
-                                                        key={lesIdx}
-                                                        onClick={() => setSelectedLesson(lesIdx)}
-                                                        className={`w-full text-left text-sm p-2 rounded transition flex items-center justify-between gap-2 ${selectedLesson === lesIdx
-                                                            ? "bg-secondary text-secondary-content"
-                                                            : "hover:bg-base-200"
-                                                            }`}
-                                                    >
-                                                        <span className="flex items-center gap-1 flex-1 min-w-0">
-                                                            {isCompleted && <span className="text-success">✓</span>}
-                                                            <span className="truncate">{les.title}</span>
-                                                        </span>
-                                                        <div className="flex items-center gap-1 flex-shrink-0">
-                                                            {hasLiveClass && (
-                                                                <span className="badge badge-xs badge-info" title="Has Live Class">🔴</span>
-                                                            )}
-                                                            {hasAssignment && (
-                                                                <span className="badge badge-xs badge-secondary" title="Has Assignment">📝</span>
-                                                            )}
-                                                            {hasQuiz && (
-                                                                <span className="badge badge-xs badge-primary" title="Has Quiz">❓</span>
-                                                            )}
-                                                        </div>
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+                <progress
+                  className="progress progress-primary w-full mt-2"
+                  value={enrollment?.progress?.percent || 0}
+                  max="100"
+                ></progress>
+              </div>
             </div>
+
+            {lesson?.videoUrl && (
+              <div className="card bg-base-100 shadow">
+                <div className="card-body p-3 sm:p-6">
+                  <h3 className="card-title text-base sm:text-lg md:text-xl break-words">
+                    {lesson.title}
+                  </h3>
+                  <div className="bg-base-300 rounded overflow-hidden mt-2 sm:mt-4 w-full aspect-video">
+                    <iframe
+                      className="w-full h-full"
+                      src={convertToEmbedUrl(lesson.videoUrl)}
+                      title={lesson.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      frameBorder="0"
+                    />
+                  </div>
+
+                  <button
+                    onClick={handleMarkComplete}
+                    disabled={
+                      !!enrollment?.progress?.completedLessons?.includes(lesson)
+                    }
+                    className={`btn btn-sm sm:btn-md ${enrollment?.progress?.completedLessons?.includes(lesson) ? "btn-disabled" : "btn-success"} mt-3 sm:mt-4 w-full sm:w-auto`}
+                  >
+                    {enrollment?.progress?.completedLessons?.includes(lesson)
+                      ? "Completed ✓"
+                      : "✓ Mark as Complete"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Live Class Section */}
+            {lesson?.liveClassLink && (
+              <div className="card bg-info/10 border-2 border-info shadow">
+                <div className="card-body p-3 sm:p-6">
+                  <h3 className="card-title text-info">
+                    🔴 Live Class Available
+                  </h3>
+                  {lesson.liveClassDate && (
+                    <p className="text-sm mb-2">
+                      <strong>Scheduled:</strong>{" "}
+                      {new Date(lesson.liveClassDate).toLocaleString()}
+                    </p>
+                  )}
+                  <div className="card-actions justify-end mt-3">
+                    <a
+                      href={lesson.liveClassLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-info"
+                    >
+                      Join Live Class
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {lesson?.assignmentPrompt && (
+              <AssignmentSubmission
+                courseId={id}
+                lessonId={lesson._id}
+                prompt={lesson.assignmentPrompt}
+                enrollment={enrollment}
+                onComplete={handleMarkComplete}
+              />
+            )}
+
+            {lesson?.quiz && lesson.quiz.length > 0 && (
+              <QuizInterface
+                quiz={lesson.quiz}
+                courseId={id}
+                lessonId={lesson._id}
+                enrollment={enrollment}
+                onComplete={handleMarkComplete}
+              />
+            )}
+          </div>
+
+          <div className="card bg-base-100 shadow h-fit lg:sticky lg:top-20 order-first lg:order-last">
+            <div className="card-body p-3 sm:p-6">
+              <h3 className="card-title text-base sm:text-lg mb-2 sm:mb-4">
+                Modules & Lessons
+              </h3>
+
+              <div className="space-y-2 sm:space-y-3 max-h-[40vh] sm:max-h-[50vh] lg:max-h-[70vh] overflow-y-auto">
+                {currentCourse.syllabus?.map((mod, modIdx) => (
+                  <div key={modIdx} className="space-y-2">
+                    <button
+                      onClick={() => {
+                        setSelectedModule(modIdx);
+                        setSelectedLesson(0);
+                      }}
+                      className={`w-full text-left font-semibold p-2 rounded transition ${
+                        selectedModule === modIdx
+                          ? "bg-primary text-primary-content"
+                          : "bg-base-200 hover:bg-base-300"
+                      }`}
+                    >
+                      📚 {mod.title}
+                    </button>
+
+                    {selectedModule === modIdx && (
+                      <div className="space-y-1 pl-4">
+                        {mod.lessons?.map((les, lesIdx) => {
+                          const hasAssignment = !!les.assignmentPrompt;
+                          const hasQuiz = les.quiz && les.quiz.length > 0;
+                          const hasLiveClass = !!les.liveClassLink;
+                          const isCompleted =
+                            enrollment?.progress?.completedLessons?.includes(
+                              les._id,
+                            );
+
+                          // Check if live class is upcoming
+                          const isUpcoming =
+                            hasLiveClass &&
+                            les.liveClassDate &&
+                            new Date(les.liveClassDate) > new Date();
+                          const liveClassDate =
+                            hasLiveClass && les.liveClassDate
+                              ? new Date(les.liveClassDate)
+                              : null;
+
+                          return (
+                            <button
+                              key={lesIdx}
+                              onClick={() => setSelectedLesson(lesIdx)}
+                              className={`w-full text-left text-sm p-2 rounded transition flex items-center justify-between gap-2 ${
+                                selectedLesson === lesIdx
+                                  ? "bg-secondary text-secondary-content"
+                                  : "hover:bg-base-200"
+                              }`}
+                            >
+                              <span className="flex items-center gap-1 flex-1 min-w-0">
+                                {isCompleted && (
+                                  <span className="text-success">✓</span>
+                                )}
+                                <span className="truncate">{les.title}</span>
+                              </span>
+                              <div className="flex items-center gap-1 flex-shrink-0">
+                                {hasLiveClass && (
+                                  <span
+                                    className="badge badge-xs badge-info"
+                                    title="Has Live Class"
+                                  >
+                                    🔴
+                                  </span>
+                                )}
+                                {hasAssignment && (
+                                  <span
+                                    className="badge badge-xs badge-secondary"
+                                    title="Has Assignment"
+                                  >
+                                    📝
+                                  </span>
+                                )}
+                                {hasQuiz && (
+                                  <span
+                                    className="badge badge-xs badge-primary"
+                                    title="Has Quiz"
+                                  >
+                                    ❓
+                                  </span>
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     );
 }
 
